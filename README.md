@@ -1,6 +1,7 @@
 # Frontend Performance Optimization Summary
 
 ## 1. Problem Background
+Link to the video: https://www.youtube.com/watch?v=Ybz6P-l9YHc
 Modern websites are no longer static images — they are full-fledged applications.  
 Users expect fast and smooth interaction.  
 When a site "lags", it causes frustration, leads to user loss, and results in financial losses for businesses.  
