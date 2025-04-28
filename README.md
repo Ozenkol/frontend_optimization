@@ -34,6 +34,9 @@ The mathematical model is simple:
 
 There are also memory limitations: if the DOM is too large, memory fills up, and garbage collection (GC) starts, which can also freeze the site for hundreds of milliseconds.
 
+![image](https://github.com/user-attachments/assets/74774610-5525-4155-98d8-cb563ba01f04)
+
+
 ### Conclusion:
 - We must fit within the time limits per frame.
 - Memory should be used cautiously to avoid garbage collection or memory leaks.
