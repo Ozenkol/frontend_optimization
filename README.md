@@ -1,82 +1,86 @@
-# Frontend Performance Optimization Summary
+# Report on the Video "Frontend Performance Optimization"
 
 ## 1. Problem Background
-Link to the video: https://www.youtube.com/watch?v=Ybz6P-l9YHc
-Modern websites are no longer static images — they are full-fledged applications.  
-Users expect fast and smooth interaction.  
-When a site "lags", it causes frustration, leads to user loss, and results in financial losses for businesses.  
-User emotions depend directly on the responsiveness of the frontend.
 
-**Environment**:  
-The main activity happens inside the user's browser, which includes:
-- Rendering engine (e.g., Blink in Chrome),
-- Event loop for processing events,
-- Memory storage (DOM tree, caches, in-app data),
-- Network services (XHR, fetch API).
+Link to the video https://www.youtube.com/watch?v=Ybz6P-l9YHc
 
-Performance issues arise due to heavy memory usage, long-running computations, or poorly handled events.
+Today, websites are full-fledged applications, not just images with text. People expect pages to be responsive: clicking a button or scrolling should happen instantly. 
+
+If the interface lags, it's not just user frustration; it's a direct loss of money for businesses. 
+
+The problem is that modern websites are overloaded: complex logic, animations, and large amounts of data. All of this runs inside the browser, where there are limitations in CPU speed, available memory, and refresh rate.
+
+The browser is, in essence, our environment: it handles page rendering, event processing via the Event Loop, stores the DOM tree in memory, and manages network requests.
 
 ## 2. Requirements for Solving the Problem
-To address frontend performance issues, we need to:
-- Reduce CPU and memory load.
-- Ensure smooth interaction (scrolling, clicking, typing).
-- Minimize UI response time.
-- Avoid memory leaks and excessive DOM size.
-- Enable fast loading and dynamic data fetching.
 
-## 3. Situation Modeling
-**Interaction Model**:  
-- Users interact with dynamic UIs (scrolling, clicking, text input).
-- Browsers use an event loop to render frames (~60 FPS).
-- If JavaScript code or event handlers take too long, frame drops and visual lags occur.
+For websites to run fast, we need to:
 
-**Numerical Characteristics**:
-- Each frame must complete in ~16.6ms (for 60 FPS).
-- Delays over 50–100ms are noticeable to users.
-- High memory usage triggers Garbage Collection (GC), freezing the app for 100–200ms.
+- Minimize computations in the main thread.
+- Avoid overloading browser memory.
+- Prevent long delays during scrolling, clicks, or content loading.
+- Give users feedback that something is happening (even if there’s a delay).
+- Load data quickly, without overloading the browser.
 
-**Business Model**:
-- User → Site → Expected fast response → Successful purchase or service use.  
-Every lag risks losing a customer.
+The task is to make the website light but not by cutting functionality.
 
-## 4. Impact on System Architecture
-Frontend architecture must support:
-- **Services**:
-  - Data fetching optimized for speed (batching requests).
-  - Dynamic element rendering (lazy loading).
-- **Databases**:
-  - Client-side caching to reduce network usage.
-- **Structure**:
-  - Offloading heavy calculations to Web Workers.
-  - Using Canvas instead of DOM for complex rendering.
-  - DOM optimization: dynamic loading, list virtualization, minimal DOM size.
+## 3. Modeling Scenarios
 
-## 5. Engineering Approaches to the Solution
-Applied techniques:
-- **Reduce workload**:
-  - Lazy load visible elements only (infinite scroll).
-- **Event frequency optimization**:
-  - Throttle scroll events (e.g., every 100ms instead of every pixel move).
-- **Offload computations**:
-  - Use GPU via Canvas for heavy graphics.
-  - Move heavy computations to Web Workers.
-- **Memory management**:
-  - Avoid memory leaks by properly removing unused event listeners.
-- **Enhance user feedback**:
-  - Use Skeleton Screens and immediate UI responses (e.g., dimming buttons instantly).
+The video explains well that interacting with a website is a dynamic process. A user clicks, scrolls, and moves the mouse — meanwhile, the browser processes events via the Event Loop.
 
-## 6. Solution Optimality
-Advantages of the approach:
-- Faster UI response.
-- Lower CPU and memory usage.
-- Fewer freezes and glitches.
-- More stable performance across different devices and networks.
-- Higher user satisfaction.
+The mathematical model is simple:
+- 60 frames per second → which means we have only 16.6 milliseconds per frame to process all events and redraw the screen.
+- If something takes longer, the website starts to "stutter" or "freeze."
 
-Complete elimination of lags is impossible, but these techniques dramatically improve the frontend experience for the majority of users.
+There are also memory limitations: if the DOM is too large, memory fills up, and garbage collection (GC) starts, which can also freeze the site for hundreds of milliseconds.
 
-## 7. Short Conclusion
-Frontend performance problems are a natural result of browser architecture and frontend complexity.  
-Solving them requires smart engineering:  
-we must minimize calculations, manage memory wisely, and provide clear user feedback.  
-A holistic optimization strategy results in faster, more reliable, and user-friendly web applications that contribute to business success.
+### Conclusion:
+- We must fit within the time limits per frame.
+- Memory should be used cautiously to avoid garbage collection or memory leaks.
+
+## 4. How the Model Affects System Architecture
+
+Based on this model, the frontend architecture must be very careful:
+
+- Don’t load everything at once: lazy loading is necessary.
+- Virtualize large lists (e.g., load product cards as the user scrolls).
+- Heavy operations should be moved to Web Workers (separate threads).
+- Draw complex graphics using Canvas, not DOM.
+- Network operations (API requests) must be well-organized to avoid slowing down the interface.
+- Each user action should only affect the minimal necessary part of the interface.
+
+## 5. Engineering Approaches for Solving the Problem
+
+The report suggested several excellent techniques:
+
+- **Reducing computations**: show only the necessary part of the content first (e.g., 20 cats instead of 5000).
+- **Throttling events**: handle scrolling not every millisecond, but say, every 100ms.
+- **Offloading work to other threads**: use Web Workers for heavy computations or Canvas for complex graphics.
+- **Memory optimization**: clean up event handlers and watch for DOM element leaks.
+- **Transparent feedback**: show skeletons or loading animations to let the user know something is happening.
+
+I really liked the approach of "not burdening the processor unnecessarily" — for example, if scrolling can be handled less frequently, it should be done that way.
+
+## 6. How Optimal is the Solution?
+
+In my opinion, the proposed solution is well-balanced. It doesn’t try to offer a "magic bullet" but rather breaks the problem into parts: CPU, memory, delays.
+
+I really liked how concrete methods are suggested, not just to speed up the site but also to make the behavior understandable for the user.
+
+I completely agree that without proper feedback, the interface will always seem buggy, even if everything works fine behind the scenes.
+
+The only thing that seemed difficult was working with Canvas and parallel threads. For beginners, these optimizations might be tough to implement. But the overall direction is very correct.
+
+## 7. Summary
+
+The video clearly explained why frontend applications slow down and how to address this.
+
+Key ideas:
+- Don’t overload the main thread.
+- Be mindful of memory usage.
+- Respond properly to delays.
+- Respect the user.
+
+For me, I understood that optimization is not just about "speeding up the website" but also about "making it comfortable to use."
+
+Most importantly: optimization is an engineering task, requiring a balance between speed, quality, and user experience.
